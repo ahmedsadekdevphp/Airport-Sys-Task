@@ -1,0 +1,16 @@
+{
+    "name": "ahmedsadek/airport-task",
+    "description": "modules for airport adminstration",
+    "autoload": {
+        "psr-4": {
+            "Ahmedsadek\\AirportTask\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "ahmed.sadek",
+            "email": "sd.ahmed.sadek@gmail.com"
+        }
+    ],
+    "require": {}
+}
