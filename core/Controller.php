@@ -1,10 +1,18 @@
 <?php
+include_once(__DIR__ . '/../app/services/Response.php');
 
 class Controller
 {
-    public function model($model)
+    protected $data;
+
+    public function __construct()
     {
-        require_once '../app/models/' . $model . '.php';
-        return new $model();
+        $this->data = $this->getInputData();
+    }
+
+    protected function getInputData()
+    {
+        $input = file_get_contents("php://input");
+        return json_decode($input, true);
     }
 }
