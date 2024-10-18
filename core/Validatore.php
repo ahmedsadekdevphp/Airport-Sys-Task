@@ -4,6 +4,10 @@ require_once  '../app/services/Helpers.php';
 class Validator
 {
     private $errors = [];
+    private function sanitize($value)
+    {
+        return htmlspecialchars(strip_tags(trim($value)));
+    }
 
     public function validate($data, $rules)
     {
@@ -14,12 +18,15 @@ class Validator
             }
         }
         if ($this->errors) {
-            Response::jsonResponse(["status" => HTTP_UNPROCESSABLE_ENTITY, "data" =>$this->errors]);
+            Response::jsonResponse(["status" => HTTP_UNPROCESSABLE_ENTITY, "data" => $this->errors]);
+        } else {
+            return $data;
         }
     }
 
     private function applyRule($field, $value, $rule)
     {
+        $value = $this->sanitize($value);
         switch ($rule) {
             case 'required':
                 if (empty($value)) {

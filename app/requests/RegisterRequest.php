@@ -12,6 +12,6 @@ class RegisterRequest
              'email' => 'required|email|unique:airport_users',
             'password'  => 'required|password'
         ];
-        $validator->validate($data, $rules);
+       return $validator->validate($data, $rules);
     }
 }

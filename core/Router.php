@@ -5,10 +5,7 @@ class Router
 {
     private const HTTP_METHODS = ['GET', 'POST'];
 
-    private $routes = [
-        'GET' => [],
-        'POST' => [],
-    ];
+    private $routes = [];
     /**
      * Adds a new route to the routing table.
      *
@@ -22,11 +19,10 @@ class Router
      */
     public function add(string $method, string $uri, $action): void
     {
-        if (!in_array($method, self::HTTP_METHODS)) {
-            throw new InvalidArgumentException("HTTP method $method is not supported.");
-        }
-        $this->routes[$method][$uri] = $action;
+        $normalizedUri = $this->normalizeUrl($uri);
+        $this->routes[$method][$normalizedUri] = $action;
     }
+
 
     /**
      * Dispatches a request to the appropriate controller action based on the URL and HTTP method.
@@ -39,10 +35,14 @@ class Router
     public function dispatch(string $url): void
     {
         $method = $_SERVER['REQUEST_METHOD'];
-        $url = $this->normalizeUrl($url);
-        $this->checkMethod($method, $this->routes);
-        $this->CheckRoute($url, $this->routes[$method]);
-        $action = $this->routes[$method][$url];
+        $normalizedUrl = $this->normalizeUrl($url);
+
+        if (!isset($this->routes[$method][$normalizedUrl])) {
+            $this->sendResponse(404, "Route not found for URL: $normalizedUrl");
+            return;
+        }
+
+        $action = $this->routes[$method][$normalizedUrl];
         $this->handleAction($action);
     }
 
@@ -54,13 +54,12 @@ class Router
      * 
      * @throws Exception Sends a 404 response if the route for the given URL is not found.
      */
-    private function CheckRoute($url, $routes)
+    private function checkRoute($url, $routes)
     {
         if (!array_key_exists($url, $routes)) {
             $this->sendResponse(404, "Route not found for URL: $url");
         }
     }
-
     /**
      * Checks if the provided HTTP method is allowed .
      *
@@ -86,8 +85,9 @@ class Router
      */
     private function normalizeUrl(string $url): string
     {
-        return trim(parse_url($url, PHP_URL_PATH), '/');
+        return trim($url, '/'); // Trim leading/trailing slashes for consistency
     }
+
 
     /**
      * Handles the execution of an action, which can either be a callable 
@@ -118,6 +118,8 @@ class Router
      */
     private function handleControllerAction(string $action)
     {
+        var_dump($action);
+        die;
         list($controllerName, $actionMethod) = explode('@', $action);
 
         $controllerFile = '../app/controllers/' . $controllerName . '.php';
@@ -127,6 +129,7 @@ class Router
 
         require_once $controllerFile;
         $controllerInstance = new $controllerName();
+
         if (!method_exists($controllerInstance, $actionMethod)) {
             $this->sendResponse(404, "Method $actionMethod not found in controller $controllerName.");
         }

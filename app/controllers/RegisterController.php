@@ -17,9 +17,9 @@ class RegisterController extends Controller
     public function register()
     {
         $request = $this->data;
-        RegisterRequest::validateRegistration($request);
+        $validatedData= RegisterRequest::validateRegistration($request);
         $user = new User();
-        if ($user->create($request)) {
+        if ($user->create($validatedData)) {
             $response = ["status" => HTTP_OK, "message" => trans('user_registration_successful')];
         } else {
             $response = ["status" => HTTP_INTERNAL_SERVER_ERROR, "message" => trans('User_registration_failed')];

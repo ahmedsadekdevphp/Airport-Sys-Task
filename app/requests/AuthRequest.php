@@ -11,6 +11,6 @@ class AuthRequest
             'email' => 'required|email',
             'password'  => 'required'
         ];
-        $validator->validate($data, $rules);
+        return $validator->validate($data, $rules);
     }
 }

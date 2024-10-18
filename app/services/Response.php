@@ -25,6 +25,7 @@ class Response
         if (isset($responseArray['message'])) {
             $response['message'] = $responseArray['message'];
         }
+
         echo json_encode($response);
         exit;
     }
