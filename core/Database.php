@@ -1,5 +1,4 @@
 <?php
-include_once(__DIR__ . '/../config/config.php');
 
 class Database
 {
@@ -9,7 +8,7 @@ class Database
     private $pass = '';
     private $dbname = '';
 
-    private $dbh; 
+    private $dbh;
     private $stmt;
     private $error;
 
@@ -33,7 +32,8 @@ class Database
             die($this->error);
         }
     }
-    public static function getConnection() {
+    public static function getConnection()
+    {
         if (self::$instance == null) {
             self::$instance = new Database();
         }
@@ -83,4 +83,5 @@ class Database
     {
         return $this->dbh->prepare($sql);
     }
+
 }

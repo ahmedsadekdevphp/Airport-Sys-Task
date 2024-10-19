@@ -10,8 +10,13 @@ class User extends Model
     public $email;
     public $password;
     public $role;
-    public $is_approved;
+    public $approved;
 
+    public function getAllUsers($page = 1, $resultsPerPage = 10)
+    {
+        $columns = 'id, full_name, email, role,approved';
+        return $this->paginate($this->table_name, $page, $resultsPerPage,$columns);
+    }
 
     public function create(array $data)
     {

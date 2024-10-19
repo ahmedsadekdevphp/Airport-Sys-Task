@@ -1,5 +1,4 @@
 <?php
-include_once(__DIR__ . '/../app/services/Response.php');
 
 class Controller
 {

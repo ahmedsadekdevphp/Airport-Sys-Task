@@ -1,5 +1,4 @@
 <?php
-require_once  '../app/services/Helpers.php';
 
 class Validator
 {

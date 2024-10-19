@@ -3,7 +3,7 @@
         'name' => 'ahmedsadek/airport-task',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => 'a4c59b24d6f584acc1bb2f4d0e78103a99d8600d',
+        'reference' => '730b18974620b9aec2f98494db1d4e4e19ba98ed',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'ahmedsadek/airport-task' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => 'a4c59b24d6f584acc1bb2f4d0e78103a99d8600d',
+            'reference' => '730b18974620b9aec2f98494db1d4e4e19ba98ed',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
