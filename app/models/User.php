@@ -12,10 +12,31 @@ class User extends Model
     public $role;
     public $approved;
 
-    public function getAllUsers($page = 1, $resultsPerPage = 10)
+
+    public function resetPassword($userID, $newPass)
+    {
+        $fields = [
+            'password' => password_hash($newPass, PASSWORD_BCRYPT)
+        ];
+        $conditions = [
+            'id' => $userID
+        ];
+        return $this->QueryBuilder->updateFields($this->table_name, $fields, $conditions);
+    }
+    public function changeStatus($userID, $status)
+    {
+        $fields = [
+            'approved' => $status,
+        ];
+        $conditions = [
+            'id' => $userID
+        ];
+        return $this->QueryBuilder->updateFields($this->table_name, $fields, $conditions);
+    }
+    public function getAllUsers($page)
     {
         $columns = 'id, full_name, email, role,approved';
-        return $this->QueryBuilder->paginate($this->table_name, $page, $resultsPerPage, $columns);
+        return $this->QueryBuilder->paginate($this->table_name, $page, config('PAGINATE_NUM'), $columns);
     }
 
     public function create(array $data)

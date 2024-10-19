@@ -13,7 +13,7 @@ class Validator
         foreach ($rules as $field => $ruleSet) {
             $rulesArray = explode('|', $ruleSet);
             foreach ($rulesArray as $rule) {
-                $this->applyRule($field, $data[$field] ?? null, $rule);
+                $this->applyRule($field, $data[$field] ?? null, $rule,$data);
             }
         }
         if ($this->errors) {
@@ -23,7 +23,7 @@ class Validator
         }
     }
 
-    private function applyRule($field, $value, $rule)
+    private function applyRule($field, $value, $rule,$data)
     {
         $value = $this->sanitize($value);
         switch ($rule) {
@@ -41,7 +41,11 @@ class Validator
                 if (is_null($value) || strlen((string) $value) < 8) {
                     $this->errors[$field][] = $field . ' ' . trans('passsword_length');
                 }
-
+            case 'confirm_password':
+                if ($value !== ($data['password'] ?? null)) {
+                    $this->errors[$field][] = trans('confirm_password');
+                }
+                break;
             default:
                 if (strpos($rule, 'unique:') === 0) {
                     $table = str_replace('unique:', '', $rule); // Extract the table name

@@ -8,6 +8,45 @@ class QueryBuilder
     {
         $this->conn = $conn;
     }
+
+
+    public function updateFields($tableName, $fields, $conditions = null)
+    {
+        $setClause = [];
+        foreach ($fields as $column => $value) {
+            $setClause[] = "$column = :$column"; 
+        }
+        $setClause = implode(', ', $setClause);
+
+        $whereClause = '';
+        if ($conditions) {
+            $whereClause = ' WHERE ';
+            $conditionParts = [];
+            foreach ($conditions as $column => $value) {
+                $conditionParts[] = "$column = :where_$column"; 
+            }
+            $whereClause .= implode(' AND ', $conditionParts);
+        }
+
+        // Final SQL query
+        $query = "UPDATE $tableName SET $setClause" . $whereClause;
+        $stmt = $this->conn->prepare($query);
+
+        // Bind the field values
+        foreach ($fields as $column => $value) {
+            $stmt->bindValue(":$column", $value, PDO::PARAM_STR); 
+        }
+
+        // Bind the condition values if any
+        if ($conditions) {
+            foreach ($conditions as $column => $value) {
+                $stmt->bindValue(":where_$column", $value, PDO::PARAM_STR);
+            }
+        }
+        return $stmt->execute(); 
+    }
+
+
     public function countRows($table)
     {
         $query = "SELECT COUNT(*) as total FROM " . $table;

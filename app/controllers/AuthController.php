@@ -12,8 +12,4 @@ class AuthController extends Controller
         $response = $user->Login($validatedData);
         Response::jsonResponse($response);
     }
-
-    public function index(){
-
-    }
 }

@@ -15,10 +15,10 @@ class Database
     public function __construct()
     {
         // Assign configuration values to class properties
-        $this->host = DB_HOST;
-        $this->user = DB_USER;
-        $this->pass = DB_PASS;
-        $this->dbname = DB_NAME;
+        $this->host = config('DB_HOST');
+        $this->user =  config('DB_USER');
+        $this->pass = config('DB_PASS');
+        $this->dbname = config('DB_NAME');
 
         // DSN for PDO connection
         $dsn = 'mysql:host=' . $this->host . ';dbname=' . $this->dbname;

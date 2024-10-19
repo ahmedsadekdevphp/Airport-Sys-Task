@@ -1,7 +1,7 @@
 <?php
 class Localization
 {
-    private static $lang = DEFAULT_LANGUAGE; 
+    private static $lang = 'en'; 
     private static $translations = [];
 
     // Set the language
@@ -26,7 +26,7 @@ class Localization
     // Get translation by key
     public static function translate($key)
     {
-        Localization::setLanguage(DEFAULT_LANGUAGE);
+        Localization::setLanguage('en');
         return self::$translations[$key] ?? $key; // Return key if translation not found
     }
 }
