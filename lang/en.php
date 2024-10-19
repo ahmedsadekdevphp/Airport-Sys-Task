@@ -13,6 +13,12 @@ return [
     'user_disabled'=>'User Disabled successfully',
     'confirm_password'=>'The confirmation password does not match.',
     'server_error'=>'Internal Server Error',
-    'password_changed'=>'User Passsword Resetted Successfully '
+    'password_changed'=>'User Passsword Resetted Successfully ',
+    'must_be_integer'=>'Must be integer',
+    'country_not_exist'=>'Country Not Exist !',
+    'Airport_Added'=>'Airport Added Successfully !',
+    'Airport_updated'=>'Airport Updated Successfully !',
+    'airport_not_exist'=>'AirPort Not Exist',
+    'Airport_deleted'=>'Airport Deleted !'
 
 ];

@@ -1,20 +1,73 @@
 <?php
+require_once '../core/Database.php';
+
 class QueryBuilder
 {
 
     private $conn;
 
-    public function __construct($conn)
+    public function __construct()
     {
-        $this->conn = $conn;
+        $this->conn = Database::getConnection();
     }
 
+
+    public function deleteRecord($tableName, $id)
+    {
+        $query = "DELETE FROM " . $tableName . " WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        if ($stmt->execute()) {
+            return true; 
+        }
+        return false; 
+    }
+
+
+    public function insert($table, $data)
+    {
+        $columns = implode(", ", array_keys($data));
+        $placeholders = ":" . implode(", :", array_keys($data));
+
+        $query = "INSERT INTO " . $table . " ($columns) VALUES ($placeholders)";
+        $stmt = $this->conn->prepare($query);
+        foreach ($data as $key => $value) {
+            $paramType = is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR;
+            $stmt->bindValue(":$key", $value, $paramType);
+        }
+        return $stmt->execute();
+    }
+
+
+    public function getAll($tableName, $columns = '*', $conditions = null)
+    {
+        $query = "SELECT $columns FROM $tableName";
+        $whereClause = '';
+        if ($conditions) {
+            $whereClause = ' WHERE ';
+            $conditionParts = [];
+            foreach ($conditions as $column => $value) {
+                $conditionParts[] = "$column = :where_$column";
+            }
+            $whereClause .= implode(' AND ', $conditionParts);
+        }
+
+        $query .= $whereClause;
+        $stmt = $this->conn->prepare($query);
+        if ($conditions) {
+            foreach ($conditions as $column => $value) {
+                $stmt->bindValue(":where_$column", $value, PDO::PARAM_STR);
+            }
+        }
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
     public function updateFields($tableName, $fields, $conditions = null)
     {
         $setClause = [];
         foreach ($fields as $column => $value) {
-            $setClause[] = "$column = :$column"; 
+            $setClause[] = "$column = :$column";
         }
         $setClause = implode(', ', $setClause);
 
@@ -23,7 +76,7 @@ class QueryBuilder
             $whereClause = ' WHERE ';
             $conditionParts = [];
             foreach ($conditions as $column => $value) {
-                $conditionParts[] = "$column = :where_$column"; 
+                $conditionParts[] = "$column = :where_$column";
             }
             $whereClause .= implode(' AND ', $conditionParts);
         }
@@ -34,7 +87,7 @@ class QueryBuilder
 
         // Bind the field values
         foreach ($fields as $column => $value) {
-            $stmt->bindValue(":$column", $value, PDO::PARAM_STR); 
+            $stmt->bindValue(":$column", $value, PDO::PARAM_STR);
         }
 
         // Bind the condition values if any
@@ -43,7 +96,7 @@ class QueryBuilder
                 $stmt->bindValue(":where_$column", $value, PDO::PARAM_STR);
             }
         }
-        return $stmt->execute(); 
+        return $stmt->execute();
     }
 
 

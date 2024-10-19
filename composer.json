@@ -3,7 +3,9 @@
     "description": "modules for airport adminstration",
     "autoload": {
         "psr-4": {
-            "Ahmedsadek\\AirportTask\\": "src/"
+            "core\\": "core/",
+            "database\\": "database/"
+
         }
     },
     "authors": [

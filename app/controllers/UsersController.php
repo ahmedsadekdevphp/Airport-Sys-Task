@@ -21,9 +21,8 @@ class UsersController extends Controller
     }
 
 
-    public function activateUser()
+    public function activateUser($userId)
     {
-        $userId = 27;
         $result = $this->user->changeStatus($userId, config('USER_STATUS_APPROVED'));
         if (!$result) {
             Response::jsonResponse(["status" => HTTP_INTERNAL_SERVER_ERROR, "message" => trans('server_error')]);
@@ -31,9 +30,8 @@ class UsersController extends Controller
         Response::jsonResponse(["status" => HTTP_OK, "message" => trans('user_activated')]);
     }
 
-    public function disableUser()
+    public function disableUser($userId)
     {
-        $userId = 27;
         $result = $this->user->changeStatus($userId, config('USER_STATUS_APPROVED'));
         if (!$result) {
             Response::jsonResponse(["status" => HTTP_INTERNAL_SERVER_ERROR, "message" => trans('server_error')]);
@@ -41,9 +39,8 @@ class UsersController extends Controller
         Response::jsonResponse(["status" => HTTP_OK, "message" => trans('user_disabled')]);
     }
 
-    public function resetPassword()
+    public function resetPassword($userId)
     {
-        $userId = 27;
         $request = $this->data;
         $validatedData = ResetPasswordRequest::validate($request);
         $result = $this->user->resetPassword($userId, $validatedData['password']);

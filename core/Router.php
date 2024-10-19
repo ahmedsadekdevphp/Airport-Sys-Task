@@ -2,7 +2,7 @@
 
 class Router
 {
-    private const HTTP_METHODS = ['GET', 'POST'];
+    private const HTTP_METHODS = ['GET', 'POST','DELETE','PUT'];
 
     private $routes = [];
     /**
@@ -21,7 +21,11 @@ class Router
         if (!in_array($method, self::HTTP_METHODS)) {
             throw new InvalidArgumentException("HTTP method $method is not supported.");
         }
-        $this->routes[$method][$uri] = $action;
+
+        $this->routes[$method][] = [
+            'uri' => $this->normalizeRoute($uri),
+            'action' => $action
+        ];
     }
 
     /**
@@ -37,10 +41,51 @@ class Router
         $method = $_SERVER['REQUEST_METHOD'];
         $url = $this->normalizeUrl($url);
         $this->checkMethod($method, $this->routes);
-        $this->CheckRoute($url, $this->routes[$method]);
-        $action = $this->routes[$method][$url];
-        $this->handleAction($action);
+
+        // Find the matching route and parameters
+        list($action, $params) = $this->findMatchingRoute($url, $this->routes[$method]);
+
+        if ($action) {
+            $this->handleAction($action, $params);
+        } else {
+            $this->sendResponse(404, "Route not found for URL: $url");
+        }
     }
+
+
+    /**
+     * Finds the matching route for a given URL.
+     *
+     * @param string $url The request URL.
+     * @param array $routes The defined routes.
+     * @return array The action and parameters for the matched route.
+     */
+    private function findMatchingRoute(string $url, array $routes)
+    {
+        // Check for exact (static) match first
+        foreach ($routes as $route) {
+            if ($route['uri'] === $url) {
+                return [$route['action'], []]; // No parameters for static routes
+            }
+        }
+
+        // Check for dynamic (parameterized) routes
+        foreach ($routes as $route) {
+            $routeUri = $route['uri'];
+
+            // Check if route has dynamic parameters (e.g., /user/{user_id})
+            $pattern = preg_replace('#\{[a-zA-Z0-9_]+\}#', '([a-zA-Z0-9_]+)', $routeUri);
+            $pattern = '#^' . $pattern . '$#';
+
+            if (preg_match($pattern, $url, $matches)) {
+                array_shift($matches); // Remove full match
+                return [$route['action'], $matches]; // Return action and params
+            }
+        }
+
+        return [null, []]; // No match found
+    }
+
 
     /**
      * Checks if the provided URL matches any defined route.
@@ -85,6 +130,11 @@ class Router
         return trim(parse_url($url, PHP_URL_PATH), '/');
     }
 
+    private function normalizeRoute(string $uri): string
+    {
+        return trim($uri, '/');
+    }
+
     /**
      * Handles the execution of an action, which can either be a callable 
      * (such as a closure) or a controller action specified as a string.
@@ -96,14 +146,15 @@ class Router
      *be handled (e.g., if the controller or method does not exist).
      */
 
-    private function handleAction($action)
-    {
-        if (is_callable($action)) {
-            return call_user_func($action); // Call the closure
-        }
-        $this->handleControllerAction($action);
-    }
-    /**
+     private function handleAction($action, array $params = [])
+     {
+         if (is_callable($action)) {
+             return call_user_func_array($action, $params); 
+         }
+ 
+         $this->handleControllerAction($action, $params);
+     }
+     /**
      * Handles the execution of a specified controller action.
      *     *
      * @param string $action The action string specifying the controller and method, 
@@ -112,7 +163,7 @@ class Router
      * @throws Exception If the controller file does not exist or if the method is 
      * not found in the controller.
      */
-    private function handleControllerAction(string $action)
+    private function handleControllerAction(string $action, array $params = [])
     {
         list($controllerName, $actionMethod) = explode('@', $action);
 
@@ -126,7 +177,8 @@ class Router
         if (!method_exists($controllerInstance, $actionMethod)) {
             $this->sendResponse(404, "Method $actionMethod not found in controller $controllerName.");
         }
-        return $controllerInstance->$actionMethod();
+
+        return call_user_func_array([$controllerInstance, $actionMethod], $params); // Pass parameters to method
     }
 
     private function sendResponse(int $statusCode, string $message): void

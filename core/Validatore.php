@@ -8,12 +8,12 @@ class Validator
         return htmlspecialchars(strip_tags(trim($value)));
     }
 
-    public function validate($data, $rules)
+    public function validate($data, $rules, $id = null)
     {
         foreach ($rules as $field => $ruleSet) {
             $rulesArray = explode('|', $ruleSet);
             foreach ($rulesArray as $rule) {
-                $this->applyRule($field, $data[$field] ?? null, $rule,$data);
+                $this->applyRule($field, $data[$field] ?? null, $rule, $data, $id);
             }
         }
         if ($this->errors) {
@@ -23,7 +23,7 @@ class Validator
         }
     }
 
-    private function applyRule($field, $value, $rule,$data)
+    private function applyRule($field, $value, $rule, $data, $id = null)
     {
         $value = $this->sanitize($value);
         switch ($rule) {
@@ -46,10 +46,15 @@ class Validator
                     $this->errors[$field][] = trans('confirm_password');
                 }
                 break;
+            case 'integer':
+                if (!filter_var($value, FILTER_VALIDATE_INT)) {
+                    $this->errors[$field][] = $field . ' ' . trans('must_be_integer');
+                }
+                break;
             default:
                 if (strpos($rule, 'unique:') === 0) {
                     $table = str_replace('unique:', '', $rule); // Extract the table name
-                    if ($this->isExists($table, $field, $value)) {
+                    if ($this->isExists($table, $field, $value, $id)) {
                         $this->errors[$field][] = $field . ' ' . trans('unique_field');
                     }
                     break;
@@ -67,12 +72,20 @@ class Validator
         return !empty($this->errors);
     }
 
-    private function isExists($table, $field, $value)
+    private function isExists($table, $field, $value, $id = null)
     {
         $db = new Database();
         $query = "SELECT COUNT(*) FROM $table WHERE $field = :value";
+        if ($id !== null) {
+            $query .= " AND id != :id";
+        }
         $stmt = $db->prepare($query);
         $stmt->bindValue(':value', $value);
+        
+        if ($id !== null) {
+            $stmt->bindValue(':id', $id);
+        }
+
         $stmt->execute();
         // Get the count of matching records
         $count = $stmt->fetchColumn();
