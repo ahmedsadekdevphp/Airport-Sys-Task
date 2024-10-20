@@ -2,6 +2,7 @@
 require_once '../app/models/User.php';
 require_once '../core/Controller.php';
 require_once '../app/requests/ResetPasswordRequest.php';
+require_once '../app/requests/ChangeRoleRequest.php';
 
 class UsersController extends Controller
 {
@@ -32,21 +33,25 @@ class UsersController extends Controller
 
     public function disableUser($userId)
     {
-        $result = $this->user->changeStatus($userId, config('USER_STATUS_APPROVED'));
+        $result = $this->user->changeStatus($userId, config('USER_STATUS_DISABLED'));
         if (!$result) {
             Response::jsonResponse(["status" => HTTP_INTERNAL_SERVER_ERROR, "message" => trans('server_error')]);
         }
         Response::jsonResponse(["status" => HTTP_OK, "message" => trans('user_disabled')]);
     }
 
+    public function changeRole($userId)
+    {
+        $validatedData = ChangeRoleRequest::validate($this->data);
+        $response = $this->user->changeRole($userId, $validatedData['role']);
+        Response::jsonResponse($response);
+    }
+
+
     public function resetPassword($userId)
     {
-        $request = $this->data;
-        $validatedData = ResetPasswordRequest::validate($request);
-        $result = $this->user->resetPassword($userId, $validatedData['password']);
-        if (!$result) {
-        Response::jsonResponse(["status" => HTTP_INTERNAL_SERVER_ERROR, "message" => trans('server_error')]);
-        }
-        Response::jsonResponse(["status" => HTTP_OK, "message" => trans('password_changed')]);
+        $validatedData = ResetPasswordRequest::validate($this->data);
+        $response = $this->user->resetPassword($userId, $validatedData['password']);
+        return $response;
     }
 }

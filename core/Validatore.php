@@ -5,11 +5,20 @@ class Validator
     private $errors = [];
     private function sanitize($value)
     {
-        return htmlspecialchars(strip_tags(trim($value)));
+        if (!is_null($value)) {
+            return htmlspecialchars(strip_tags(trim($value)));
+        }
     }
 
     public function validate($data, $rules, $id = null)
     {
+        if (empty($data)) {
+            Response::jsonResponse([
+                "status" => HTTP_UNPROCESSABLE_ENTITY,
+                "message" => trans('empty_request_body')
+            ]);
+            return;
+        }
         foreach ($rules as $field => $ruleSet) {
             $rulesArray = explode('|', $ruleSet);
             foreach ($rulesArray as $rule) {
@@ -81,7 +90,7 @@ class Validator
         }
         $stmt = $db->prepare($query);
         $stmt->bindValue(':value', $value);
-        
+
         if ($id !== null) {
             $stmt->bindValue(':id', $id);
         }

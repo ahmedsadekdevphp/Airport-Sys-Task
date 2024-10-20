@@ -12,7 +12,50 @@ class User extends Model
     public $role;
     public $approved;
 
+    public function changeRole($id, $newRole)
+    {
+        $this->findRole($newRole);
+        $this->findUser($id);
+        $result = $this->QueryBuilder->updateFields($this->table_name, ['role' => $newRole], ['id' => $id]);
+        if ($result) {
+            $response = ["status" => HTTP_OK, "message" => trans('role_updated')];
+        } else {
+            $response = ["status" => HTTP_INTERNAL_SERVER_ERROR, "message" => trans('server_error')];
+        }
+        return $response;
+    }
+    public  function findRole($role)
+    {
+        if (!in_array($role, ['admin', 'operator'])) {
+            Response::jsonResponse(["status" => HTTP_BAD_REQUEST, "message" => trans('invalid_role')]);
+        }
+    }
+    public function findUser($id)
+    {
+        $user = $this->QueryBuilder->find($this->table_name, ['id' => $id], ['password']);
+        if (!$user) {
+            Response::jsonResponse(["status" => HTTP_BAD_REQUEST, "message" => trans('user_not_exist')]);
+        }
+        return $user;
+    }
 
+    public function updateInfo($userID, $data)
+    {
+        $fields = [
+            'full_name' => $data['full_name'],
+            'email' => $data['email']
+        ];
+        $conditions = [
+            'id' => $userID
+        ];
+        $result = $this->QueryBuilder->updateFields($this->table_name, $fields, $conditions);
+        if ($result) {
+            $response = ["status" => HTTP_OK, "message" => trans('profile_updated')];
+        } else {
+            $response = ["status" => HTTP_INTERNAL_SERVER_ERROR, "message" => trans('server_error')];
+        }
+        return $response;
+    }
     public function resetPassword($userID, $newPass)
     {
         $fields = [
@@ -21,17 +64,19 @@ class User extends Model
         $conditions = [
             'id' => $userID
         ];
-        return $this->QueryBuilder->updateFields($this->table_name, $fields, $conditions);
+        $result = $this->QueryBuilder->updateFields($this->table_name, $fields, $conditions);
+        if (!$result) {
+            $response = Response::jsonResponse(["status" => HTTP_INTERNAL_SERVER_ERROR, "message" => trans('server_error')]);
+        } else {
+            $response = Response::jsonResponse(["status" => HTTP_OK, "message" => trans('password_changed')]);
+        }
+        return $response;
     }
+
     public function changeStatus($userID, $status)
     {
-        $fields = [
-            'approved' => $status,
-        ];
-        $conditions = [
-            'id' => $userID
-        ];
-        return $this->QueryBuilder->updateFields($this->table_name, $fields, $conditions);
+        $this->findUser($userID);
+        return $this->QueryBuilder->updateFields($this->table_name, ['approved' => $status], ['id' => $userID]);
     }
     public function getAllUsers($page)
     {
@@ -41,18 +86,17 @@ class User extends Model
 
     public function create(array $data)
     {
-        $full_name = htmlspecialchars(strip_tags($data['full_name']));
-        $email = htmlspecialchars(strip_tags($data['email']));
-        $password = password_hash($data['password'], PASSWORD_BCRYPT);
-
-        $query = "INSERT INTO " . $this->table_name . " SET full_name=:full_name, email=:email, password=:password";
-        $stmt = $this->conn->prepare($query);
-
-        $stmt->bindParam(":full_name", $full_name);
-        $stmt->bindParam(":email", $email);
-        $stmt->bindParam(":password", $password);
-
-        return $stmt->execute();
+        $result = $this->QueryBuilder->insert($this->table_name, [
+            'full_name' => $data['full_name'],
+            'email' => $data['email'],
+            'password' => password_hash($data['password'], PASSWORD_BCRYPT),
+        ]);
+        if ($result) {
+            $response = ["status" => HTTP_OK, "message" => trans('user_registration_successful')];
+        } else {
+            $response = ["status" => HTTP_INTERNAL_SERVER_ERROR, "message" => trans('server_error')];
+        }
+        return $response;
     }
 
     /**
@@ -76,7 +120,7 @@ class User extends Model
                 "message" => trans('Email_not_found')
             ];
         }
-        $result = $this->checkPassword($user, $data['password']);
+        $result = $this->checkPassword($user['password'], $data['password']);
         if (!$result) {
             return [
                 "status" => HTTP_UNAUTHORIZED,
@@ -121,16 +165,13 @@ class User extends Model
      */
     private function getUser($email)
     {
-        $query = "SELECT * FROM " . $this->table_name . " WHERE email = :email";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':email', $email);
-        $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $user = $this->QueryBuilder->find($this->table_name, ['email' => $email]);
+        return $user;
     }
 
-    private function checkPassword($user, $password)
+    public function checkPassword($password, $inputPassword)
     {
-        return password_verify($password, $user['password']);
+        return password_verify($inputPassword, $password);
     }
     /**
      * Checks if the user's account is activated based on the 'approved' status.
@@ -142,6 +183,6 @@ class User extends Model
      */
     private function checkIsActivated($user)
     {
-        return $user['approved'] == 1;
+        return $user['approved'] == config('USER_STATUS_APPROVED');
     }
 }

@@ -6,10 +6,17 @@ class Airport extends Model
     private $table_name = "airports";
 
 
-    public function GetAirPorts($page)
+    public function searchInAirports($column, $value)
     {
         $columns = 'id, airport_name, airport_code, airport_city,country_id,created_at';
-        return $this->QueryBuilder->paginate($this->table_name, $page, config('PAGINATE_NUM'), $columns);
+        return $this->QueryBuilder->searchByKey($columns, $this->table_name, $column, $value);
+    }
+
+
+    public function getAirPorts($page, $filters, $sort_by)
+    {
+        $columns = 'id, airport_name, airport_code, airport_city,country_id,created_at';
+        return $this->QueryBuilder->paginate($this->table_name, $page, config('PAGINATE_NUM'), $columns, $filters, $sort_by);
     }
     public function checkAirport($id)
     {
@@ -23,7 +30,7 @@ class Airport extends Model
         }
     }
 
-    public function DeleteAirport($id)
+    public function deleteAirport($id)
     {
         $this->checkAirport($id);
         $result = $this->QueryBuilder->deleteRecord($this->table_name, $id);
@@ -35,7 +42,7 @@ class Airport extends Model
         return $response;
     }
 
-    public function UpdateAirport($data, $id)
+    public function updateAirport($data, $id)
     {
         $this->checkAirport($id);
 
