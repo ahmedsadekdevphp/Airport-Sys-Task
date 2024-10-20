@@ -13,7 +13,7 @@ return [
     'user_disabled' => 'User Disabled successfully',
     'confirm_password' => 'The confirmation password does not match.',
     'server_error' => 'Internal Server Error',
-    'password_changed' => 'User Passsword Resetted Successfully ',
+    'password_changed' => 'User Passsword changed Successfully ',
     'must_be_integer' => 'Must be integer',
     'country_not_exist' => 'Country Not Exist !',
     'Airport_Added' => 'Airport Added Successfully !',
@@ -23,5 +23,10 @@ return [
     'profile_updated' => 'Your profile info updated !',
     'empty_request_body' => 'You must fill required fields! Request body is Empty!',
     'invalid_role' => 'Invalid Role',
-    'role_updated'=>'User role is updated !'
+    'role_updated'=>'User role is updated !',
+    'missing_authrization'=>'Missing or invalid Authorization header ! You need to login !',
+    'invalid_token'=>'Authintication Failed !',
+    'Insufficient_permissions'=>'Insufficient permissions',
+    'limit_reached'=>'Rate limit exceeded',
+    'action_limit_reached_for'=>'You Reached Limits For'
 ];

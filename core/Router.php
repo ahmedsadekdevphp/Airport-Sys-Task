@@ -1,10 +1,22 @@
 <?php
+require_once '../app/middlewares/RateLimitMiddleware.php';
+require_once '../app/middlewares/ThrottleMiddleware.php';
 
 class Router
 {
-    private const HTTP_METHODS = ['GET', 'POST','DELETE','PUT'];
+    private const HTTP_METHODS = ['GET', 'POST', 'DELETE', 'PUT'];
 
     private $routes = [];
+
+    //for all incoming request
+    private $globalMiddleware = [
+        'RateLimitMiddleware'
+    ];
+    //middlewares need authintication
+    private $specialMiddleware = [
+        'ThrottleMiddleware',
+    ];
+
     /**
      * Adds a new route to the routing table.
      *
@@ -16,7 +28,7 @@ class Router
      * @throws InvalidArgumentException If the provided HTTP method is not supported.
      * @return void
      */
-    public function add(string $method, string $uri, $action): void
+    public function add(string $method, string $uri, $action, array $middleware = [], array $roles = []): void
     {
         if (!in_array($method, self::HTTP_METHODS)) {
             throw new InvalidArgumentException("HTTP method $method is not supported.");
@@ -24,7 +36,9 @@ class Router
 
         $this->routes[$method][] = [
             'uri' => $this->normalizeRoute($uri),
-            'action' => $action
+            'action' => $action,
+            'middleware' => $middleware,
+            'roles' => $roles
         ];
     }
 
@@ -43,9 +57,40 @@ class Router
         $this->checkMethod($method, $this->routes);
 
         // Find the matching route and parameters
-        list($action, $params) = $this->findMatchingRoute($url, $this->routes[$method]);
+        list($action, $params, $middleware, $roles) = $this->findMatchingRoute($url, $this->routes[$method]);
 
         if ($action) {
+            //handel global middleware
+            foreach ($this->globalMiddleware as $m) {
+                $middlewareInstance = new $m();
+                if (!$middlewareInstance->handle()) {
+                    // Middleware failed, send response or abort
+                    return;
+                }
+            }
+            // Handle middleware if exist
+            if (!empty($middleware)) {
+                foreach ($middleware as $m) {
+                    $middlewareInstance = new $m();
+                    if ($m === RoleMiddleware::class && !empty($roles)) {
+                        $middlewareInstance->setRoles($roles);
+                    }
+                    if (!$middlewareInstance->handle()) {
+                        // Middleware failed, send response or abort
+                        return;
+                    }
+                }
+            }
+            //Handle Special Middleware
+            //handel global middleware
+            foreach ($this->specialMiddleware as $m) {
+                $middlewareInstance = new $m();
+                if (!$middlewareInstance->handle()) {
+                    // Middleware failed, send response or abort
+                    return;
+                }
+            }
+            $params = $this->sanitizeParameters($params);
             $this->handleAction($action, $params);
         } else {
             $this->sendResponse(404, "Route not found for URL: $url");
@@ -65,7 +110,7 @@ class Router
         // Check for exact (static) match first
         foreach ($routes as $route) {
             if ($route['uri'] === $url) {
-                return [$route['action'], []]; // No parameters for static routes
+                return [$route['action'], [], $route['middleware'], $route['roles']]; // Include roles
             }
         }
 
@@ -79,11 +124,11 @@ class Router
 
             if (preg_match($pattern, $url, $matches)) {
                 array_shift($matches); // Remove full match
-                return [$route['action'], $matches]; // Return action and params
+                return [$route['action'], $matches, $route['middleware'], $route['roles']]; // Include roles
             }
         }
 
-        return [null, []]; // No match found
+        return [null, [], [], []]; // No match found
     }
 
 
@@ -146,15 +191,15 @@ class Router
      *be handled (e.g., if the controller or method does not exist).
      */
 
-     private function handleAction($action, array $params = [])
-     {
-         if (is_callable($action)) {
-             return call_user_func_array($action, $params); 
-         }
- 
-         $this->handleControllerAction($action, $params);
-     }
-     /**
+    private function handleAction($action, array $params = [])
+    {
+        if (is_callable($action)) {
+            return call_user_func_array($action, $params);
+        }
+
+        $this->handleControllerAction($action, $params);
+    }
+    /**
      * Handles the execution of a specified controller action.
      *     *
      * @param string $action The action string specifying the controller and method, 
@@ -186,5 +231,18 @@ class Router
         http_response_code($statusCode);
         echo $message;
         exit;
+    }
+
+    /**
+     * Sanitize parameters to prevent XSS and other security issues.
+     *
+     * @param array $params The parameters to sanitize.
+     * @return array The sanitized parameters.
+     */
+    private function sanitizeParameters(array $params): array
+    {
+        return array_map(function ($param) {
+            return htmlspecialchars(strip_tags($param), ENT_QUOTES, 'UTF-8');
+        }, $params);
     }
 }

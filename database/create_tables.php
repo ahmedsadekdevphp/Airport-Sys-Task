@@ -40,8 +40,8 @@ $tableFiles = [
     'country' => 'database/create_country_table.sql',
     'airport' => 'database/create_airport_table.sql',
     'user' => 'database/create_user_table.sql',
-    'role' => 'database/create_role_table.sql',
-    'role_user' => 'database/create_role_user_table.sql',
+    'seessions' => 'database/create_airport_sessions.sql',
+
 ];
 
 // Iterate through each  file and execute SQL

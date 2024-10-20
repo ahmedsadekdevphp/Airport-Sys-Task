@@ -1,25 +1,24 @@
 <?php
+
 class RoleMiddleware
 {
-    private $Role;
+    private $requiredRoles = [];
 
-    public function __construct($Role)
+    public function setRoles(array $roles): void
     {
-        $this->Role = $Role;
+        $this->requiredRoles = $roles;
     }
 
     public function handle()
     {
-        $userRole = $this->getUserRole();
-        if ($userRole !== $this->Role) {
-            http_response_code(403); // Forbidden
-            echo json_encode(['message' => 'Access denied. Insufficient permissions.']);
-            exit;
+        $userRole = $_SESSION['user_data']['role'] ?? null;
+        if (empty($this->requiredRoles)) {
+            return true;
         }
+        if (!in_array($userRole, $this->requiredRoles)) {
+            Response::jsonResponse(["status" => HTTP_FORBIDDEN, "message" => trans('Insufficient_permissions')]);
+        }
+        return true;
     }
 
-    private function getUserRole()
-    {
-        return 'operator';
-    }
 }

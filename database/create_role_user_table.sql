@@ -1,9 +1,0 @@
-CREATE TABLE IF NOT EXISTS airport_user_roles (
-    user_id INT NOT NULL,
-    role_id INT NOT NULL,
-    PRIMARY KEY (user_id, role_id),
-    FOREIGN KEY (user_id) REFERENCES airport_users(id) ON DELETE CASCADE,
-    FOREIGN KEY (role_id) REFERENCES airport_roles(id) ON DELETE CASCADE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);

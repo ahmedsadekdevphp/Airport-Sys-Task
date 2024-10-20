@@ -3,23 +3,24 @@ require '../vendor/autoload.php';
 
 use \Firebase\JWT\JWT;
 
-class JWTService {
-    private static $key = "gldgjfdlgdflgdflfsffrfw";
-    private static $algo = "HS256";
+class JWTService
+{
 
-    public static function generateToken($user_data) {
+    public static function generateToken($user_data)
+    {
         $payload = [
             "iss" => "airport",
             "iat" => time(),
             "exp" => time() + (60 * 60),
             "data" => $user_data
         ];
-        return JWT::encode($payload, self::$key, self::$algo);
+        return JWT::encode($payload, config('APP_SECRET_KEY'), 'HS256');
     }
 
-    public static function validateToken($jwt) {
+    public static function validateToken($jwt)
+    {
         try {
-            $decoded = JWT::decode($jwt, self::$key, [self::$algo]);
+            $decoded = \Firebase\JWT\JWT::decode($jwt, new \Firebase\JWT\Key(config('APP_SECRET_KEY'), 'HS256'));
             return (array) $decoded->data;
         } catch (Exception $e) {
             return false;

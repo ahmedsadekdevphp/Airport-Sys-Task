@@ -3,18 +3,28 @@ require_once '../app/services/JwtService.php';
 
 class AuthMiddleware
 {
-    public function handle($request, $response) {
-        // Implement your authentication logic here
-        // Check for token, validate it, etc.
-        if (!$this->isAuthenticated($request)) {
-            http_response_code(401); // Unauthorized
-            echo json_encode(['message' => 'Unauthorized']);
-            exit;
+    /**
+     * Handles the JWT authentication.
+     * 
+     * @return void
+     */
+    public function handle()
+    {
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
+        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            Response::jsonResponse(["status" => HTTP_BAD_REQUEST, "message" => trans('missing_authrization')]);
         }
-    }
-
-    private function isAuthenticated($request) {
-        // Logic to check if the user is authenticated
-        return true; // Change this to actual logic
+        $jwt = $matches[1];
+        $decoded = JwtService::validateToken($jwt);
+        if (!$decoded) {
+            Response::jsonResponse(["status" => HTTP_UNAUTHORIZED, "message" => trans('invalid_token')]);
+        }
+        $userData = [
+            'id' => $decoded['id'],
+            'email' => $decoded['email'],
+            'role' => $decoded['role']
+        ];
+        $_SESSION['user_data'] = $userData;
+        return true;
     }
 }

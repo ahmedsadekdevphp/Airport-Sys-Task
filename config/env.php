@@ -13,4 +13,21 @@ return [
     'FIRST_PAGE' => '1',
     'USER_STATUS_APPROVED' => '1',
     'USER_STATUS_DISABLED' => '0',
+    'APP_SECRET_KEY' => 'TYJHfksp49fmr948nmfmsddfskdsflp498mdslff',
+    'RATE_LIMIT' => 5,
+    'TIME_FRAME_IN_SECONDS' => 60,
+    'throttle' => [
+        'create' => [
+            'count' => 10,
+            'time_frame' => 30
+        ],
+        'update' => [
+            'count' => 5,
+            'time_frame' => 60
+        ],
+        'delete' => [
+            'count' => 3,
+            'time_frame' => 60
+        ]
+    ],
 ];

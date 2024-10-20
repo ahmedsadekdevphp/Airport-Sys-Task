@@ -3,27 +3,33 @@ require_once '../core/Router.php';
 require_once '../app/controllers/RegisterController.php';
 require_once '../app/controllers/AuthController.php';
 require_once '../app/controllers/UsersController.php';
+require_once '../app/middlewares/AuthMiddleware.php';
+require_once '../app/middlewares/RoleMiddleware.php';
+
 $router = new Router();
 
 $router->add('POST', 'register', 'RegisterController@register');
 $router->add('POST', 'login', 'AuthController@login');
-$router->add('GET', 'users', 'UsersController@index');
-$router->add('PUT', 'users/role/{user_id}', 'UsersController@changeRole');
 
-$router->add('POST', 'users/activate/{user_id}', 'UsersController@activateUser');
-$router->add('POST', 'users/disable/{user_id}', 'UsersController@disableUser');
-$router->add('POST', 'users/reset/{user_id}', 'UsersController@resetPassword');
+$router->add('GET', 'users', 'UsersController@index', [AuthMiddleware::class, RoleMiddleware::class], ['admin']);
+$router->add('PUT', 'users/role/{user_id}', 'UsersController@changeRole', [AuthMiddleware::class, RoleMiddleware::class], ['admin']);
+$router->add('POST', 'users/activate/{user_id}', 'UsersController@activateUser', [AuthMiddleware::class, RoleMiddleware::class], ['admin']);
+$router->add('POST', 'users/disable/{user_id}', 'UsersController@disableUser', [AuthMiddleware::class, RoleMiddleware::class], ['admin']);
+$router->add('POST', 'users/reset/{user_id}', 'UsersController@resetPassword', [AuthMiddleware::class, RoleMiddleware::class], ['admin']);
 
-$router->add('GET', 'countries', 'CountryController@index');
+$router->add('GET', 'countries', 'CountryController@index', [AuthMiddleware::class, RoleMiddleware::class], ['operator']);
 
 $router->add('GET', 'airports', 'AirportsController@index');
-$router->add('POST', 'airport/store', 'AirportsController@store');
-$router->add('PUT', 'airport/update/{id}', 'AirportsController@update');
-$router->add('DELETE', 'airport/delete/{id}', 'AirportsController@destory');
+$router->add('POST', 'airport/store', 'AirportsController@store', [AuthMiddleware::class, RoleMiddleware::class], ['operator']);
+$router->add('PUT', 'airport/update/{id}', 'AirportsController@update', [AuthMiddleware::class, RoleMiddleware::class], ['operator']);
+$router->add('DELETE', 'airport/delete/{id}', 'AirportsController@destory', [AuthMiddleware::class, RoleMiddleware::class], ['operator']);
+
+
+
+$router->add('PUT', 'profile/update', 'ProfileController@update', [AuthMiddleware::class]);
+$router->add('PUT', 'profile/password', 'ProfileController@changePassword', [AuthMiddleware::class]);
+
 
 $router->add('GET', 'airport/name', 'AirportsController@getAirportByName');
-
 $router->add('GET', 'airport/code', 'AirportsController@getAirportByCode');
 
-$router->add('PUT', 'profile/update', 'ProfileController@update');
-$router->add('PUT', 'profile/password', 'ProfileController@changePassword');
