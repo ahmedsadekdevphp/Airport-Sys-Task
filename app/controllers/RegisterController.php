@@ -2,6 +2,7 @@
 require_once '../app/models/User.php';
 require_once '../app/requests/RegisterRequest.php';
 require_once '../core/Controller.php';
+require_once '../app/services/NotifyUser.php';
 class RegisterController extends Controller
 {
     /**
@@ -19,6 +20,7 @@ class RegisterController extends Controller
         $validatedData = RegisterRequest::validateRegistration($this->data);
         $user = new User();
         $response = $user->create($validatedData);
+        NotifyUser::sendWelcomeEmail($validatedData['email'], $validatedData['full_name']);
         Response::jsonResponse($response);
     }
 }

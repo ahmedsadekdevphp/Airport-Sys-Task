@@ -28,5 +28,13 @@ return [
     'invalid_token'=>'Authintication Failed !',
     'Insufficient_permissions'=>'Insufficient permissions',
     'limit_reached'=>'Rate limit exceeded',
-    'action_limit_reached_for'=>'You Reached Limits For'
+    'action_limit_reached_for'=>'You Reached Limits For',
+    'session_expired'=>'Your Session is Expired',
+    'company_name'=>'Airports Managemet System',
+    'welcome_email_subject'=>'Welcome to Our Service',
+    'welcome_body' => 'Thank you for registering.',
+    'welcome_greeting' => 'Welcome,',
+    'added'=>'Added',
+    'deleted'=>'Deleted',
+    'updated'=>'Updated'
 ];

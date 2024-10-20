@@ -20,19 +20,15 @@ class Airport extends Model
     }
     public function checkAirport($id)
     {
-        $columns = 'id,airport_name';
-        $conditions = [
-            'id' => $id
-        ];
-        $exist = $this->QueryBuilder->getAll($this->table_name, $columns, $conditions);
-        if (!$exist) {
+        $airport = $this->QueryBuilder->find($this->table_name,['id' => $id],['id,airport_name']);
+        if (!$airport) {
             Response::jsonResponse(["status" => HTTP_BAD_REQUEST, "message" => trans('airport_not_exist')]);
         }
+        return $airport;
     }
 
     public function deleteAirport($id)
     {
-        $this->checkAirport($id);
         $result = $this->QueryBuilder->deleteRecord($this->table_name, $id);
         if ($result) {
             $response = ["status" => HTTP_OK, "message" => trans('Airport_deleted')];
@@ -69,7 +65,7 @@ class Airport extends Model
             'airport_code' => $data['airport_code'],
             'airport_city' => $data['city'],
             'country_id' => $data['country'],
-            'user_id' => 27,
+            'user_id' => auth('id'),
         ]);
         if ($result) {
             $response = ["status" => HTTP_OK, "message" => trans('Airport_Added')];

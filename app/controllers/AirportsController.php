@@ -6,6 +6,8 @@ require_once '../app/requests/AirportRequest.php';
 require_once '../app/requests/SearchAirportRequestName.php';
 require_once '../app/requests/SearchAirportRequestCode.php';
 require_once '../app/models/Country.php';
+require_once '../app/services/NotifyAdmin.php';
+
 class AirportsController extends Controller
 {
     private $airport;
@@ -33,6 +35,7 @@ class AirportsController extends Controller
         $validatedData = AirportRequest::validate($request);
         $this->country->checkCountry($validatedData['country']);
         $response = $this->airport->createAirport($validatedData);
+        NotifyAdmin::sendActionEmail(trans('added'), $validatedData['name']);
         Response::jsonResponse($response);
     }
 
@@ -41,6 +44,7 @@ class AirportsController extends Controller
         $request = $this->data;
         $validatedData = UpdateAirportRequest::validate($request, $airport_id);
         $response = $this->airport->updateAirport($validatedData, $airport_id);
+        NotifyAdmin::sendActionEmail(trans('updated'), $validatedData['name']);
         Response::jsonResponse($response);
     }
 
@@ -61,7 +65,9 @@ class AirportsController extends Controller
     }
     public function destory($id)
     {
+        $airport = $this->airport->checkAirport($id);
         $response = $this->airport->deleteAirport($id);
+        NotifyAdmin::sendActionEmail(trans('deleted'), $airport['airport_name']);
         Response::jsonResponse($response);
     }
     /**

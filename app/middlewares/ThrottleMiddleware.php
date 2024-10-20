@@ -27,6 +27,9 @@ class ThrottleMiddleware
             return true; // Allow request to proceed
         }
         $userId = $_SESSION['user_data']['id'] ?? null;
+        if (!$userId) {
+            return true;
+        }
         // Check the user action limits
         $actionData = $this->session->getUserActionLimit($userId, $action);
         if (!$actionData) {
@@ -72,7 +75,7 @@ class ThrottleMiddleware
         if ($this->hasUserActionLimitBeenReached($data['count'], $action)) {
             return Response::jsonResponse([
                 "status" => HTTP_TOO_MANY_REQUESTS,
-                "message" => trans("action_limit_reached_for").$action 
+                "message" => trans("action_limit_reached_for") . $action
             ]);
         }
         //update user session has remaining limit 

@@ -185,4 +185,13 @@ class User extends Model
     {
         return $user['approved'] == config('USER_STATUS_APPROVED');
     }
+
+    public function getAdminEmails(){
+        $columns = 'email';
+        $conditions = [
+            'role' => config('ADMIN_ROLE')
+        ];
+        $data = $this->QueryBuilder->getAll($this->table_name, $columns, $conditions);
+        return  $data;
+    }
 }

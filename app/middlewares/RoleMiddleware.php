@@ -11,7 +11,7 @@ class RoleMiddleware
 
     public function handle()
     {
-        $userRole = $_SESSION['user_data']['role'] ?? null;
+        $userRole = auth('role');
         if (empty($this->requiredRoles)) {
             return true;
         }

@@ -15,7 +15,7 @@ class ProfileController extends Controller
 
     public function Update()
     {
-        $userID = 18;
+        $userID = auth('id');
         $request = $this->data;
         $validatedData = ProfileUpdateRequest::validate($request, $userID);
         $response = $this->user->updateInfo($userID, $validatedData);
@@ -24,7 +24,7 @@ class ProfileController extends Controller
 
     public function changePassword()
     {
-        $userID = 18;
+        $userID = auth('id');
         $validatedData = ChangePasswordRequest::validate($this->data, $userID);
         $user = $this->user->findUser($userID);
         $result = $this->user->checkPassword($user['password'], $validatedData['old_password']);
