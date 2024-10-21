@@ -1,8 +1,11 @@
 <?php
+
 namespace App\Models;
+
 use Core\Model;
 use App\Services\Response;
 use App\Services\JwtService;
+
 class User extends Model
 {
     private $table_name = "airport_users";
@@ -12,6 +15,17 @@ class User extends Model
     public $password;
     public $role;
     public $approved;
+
+    public function updateTokenVersion($userId, $newVersion = null)
+    {
+        $fields = [
+            'token_version' => $newVersion,
+        ];
+        $conditions = [
+            'id' => $userId
+        ];
+        $this->QueryBuilder->updateFields($this->table_name, $fields, $conditions);
+    }
 
     public function changeRole($id, $newRole)
     {
@@ -33,7 +47,7 @@ class User extends Model
     }
     public function findUser($id)
     {
-        $user = $this->QueryBuilder->find($this->table_name, ['id' => $id], ['password']);
+        $user = $this->QueryBuilder->find($this->table_name, ['id' => $id], ['password','token_version']);
         if (!$user) {
             Response::jsonResponse(["status" => HTTP_BAD_REQUEST, "message" => trans('user_not_exist')]);
         }
@@ -187,7 +201,8 @@ class User extends Model
         return $user['approved'] == config('USER_STATUS_APPROVED');
     }
 
-    public function getAdminEmails(){
+    public function getAdminEmails()
+    {
         $columns = 'email';
         $conditions = [
             'role' => config('ADMIN_ROLE')

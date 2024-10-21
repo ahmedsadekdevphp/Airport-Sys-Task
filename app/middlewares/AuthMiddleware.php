@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Middlewares;
+
 use App\Services\JwtService;
 use App\Services\Response;
 
@@ -20,7 +22,7 @@ class AuthMiddleware
         $decoded = JwtService::validateToken($jwt);
         if (!$decoded) {
             Response::jsonResponse(["status" => HTTP_UNAUTHORIZED, "message" => trans('invalid_token')]);
-        }
+        } 
         $userData = [
             'id' => $decoded['id'],
             'email' => $decoded['email'],

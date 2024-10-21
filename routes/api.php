@@ -7,6 +7,7 @@ $router = new Router();
 $router->add('POST', 'register', 'RegisterController@register');
 $router->add('POST', 'login', 'AuthController@login');
 
+
 $router->add('GET', 'users', 'UsersController@index', [AuthMiddleware::class, RoleMiddleware::class], ['admin']);
 $router->add('PUT', 'users/role/{user_id}', 'UsersController@changeRole', [AuthMiddleware::class, RoleMiddleware::class], ['admin']);
 $router->add('POST', 'users/activate/{user_id}', 'UsersController@activateUser', [AuthMiddleware::class, RoleMiddleware::class], ['admin']);
@@ -24,6 +25,7 @@ $router->add('DELETE', 'airport/delete/{id}', 'AirportsController@destory', [Aut
 
 $router->add('PUT', 'profile/update', 'ProfileController@update', [AuthMiddleware::class]);
 $router->add('PUT', 'profile/password', 'ProfileController@changePassword', [AuthMiddleware::class]);
+$router->add('POST', 'logout', 'AuthController@logout', [AuthMiddleware::class]);
 
 
 $router->add('GET', 'airport/name', 'AirportsController@getAirportByName');

@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS airport_users (
     password VARCHAR(255) NOT NULL,
     role ENUM('admin', 'operator') DEFAULT 'operator',
     approved BOOLEAN DEFAULT FALSE,
+    token_version INT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
