@@ -1,8 +1,7 @@
 <?php
 
 namespace App\Middlewares;
-
-use App\Models\Session;
+use App\Services\Session;
 use App\Services\Response;
 use App\Services\GetIp;
 use DateTime;

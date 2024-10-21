@@ -1,10 +1,11 @@
 <?php
 namespace App\Middlewares;
-use  App\Models\Session;
 use App\Services\Response;
 use App\Services\GetIp;
+use App\Services\Session;
 use DateTime;
 use DateInterval;
+
 class RateLimitMiddleware
 {
     private $session;

@@ -35,5 +35,8 @@ return [
     'MAIL_PASSWORD' => ']laUi#.bnx}F',
     'MAIL_PORT' => 465, 
     'MAIL_ENCRYPTION' => 'ssl', 
-    'ADMIN_ROLE'=>'admin'
+    'ADMIN_ROLE'=>'admin',
+    'REDIS_HOST'=>'redis-10197.c8.us-east-1-2.ec2.redns.redis-cloud.com',
+    'REDIS_PORT'=>'10197',
+    'REDIS_PASSWORD'=>'1yqW3a6khbglWHydI3MzQ1Uq9h89OAfn'
 ];

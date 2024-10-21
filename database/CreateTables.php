@@ -8,8 +8,6 @@ $tableFiles = [
     'country' => 'database/structure/create_country_table.sql',
     'airport' => 'database/structure/create_airport_table.sql',
     'user' => 'database/structure/create_user_table.sql',
-    'seessions' => 'database/structure/create_airport_sessions.sql',
-
 ];
 
 $db = new Migrate();
