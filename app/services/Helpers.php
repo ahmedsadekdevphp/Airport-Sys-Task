@@ -1,7 +1,7 @@
 <?php
-require_once('../core/Localization.php');
-require_once('../config/Config.php');
-
+use Core\Localization;
+use Config\Config;
+use App\services\Response;
 function trans($key) {
     return Localization::translate($key);
 }

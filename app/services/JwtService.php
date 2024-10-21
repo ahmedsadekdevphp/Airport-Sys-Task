@@ -1,9 +1,9 @@
 <?php
+namespace App\Services;
 require '../vendor/autoload.php';
-
 use \Firebase\JWT\JWT;
-
-class JWTService
+use Exception;
+class JwtService
 {
 
     public static function generateToken($user_data)

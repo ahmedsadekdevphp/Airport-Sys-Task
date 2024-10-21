@@ -1,6 +1,10 @@
 <?php
-require_once '../app/models/Session.php';
-require_once '../app/services/GetIp.php';
+namespace App\Middlewares;
+use  App\Models\Session;
+use App\Services\Response;
+use App\Services\GetIp;
+use DateTime;
+use DateInterval;
 class RateLimitMiddleware
 {
     private $session;

@@ -7,40 +7,61 @@ namespace Composer\Autoload;
 class ComposerStaticInit474ac9d19ec0d2456898e1bf47705902
 {
     public static $prefixLengthsPsr4 = array (
-        'd' => 
+        'R' => 
         array (
-            'database\\' => 9,
-        ),
-        'c' => 
-        array (
-            'core\\' => 5,
+            'Routes\\' => 7,
         ),
         'P' => 
         array (
             'PHPMailer\\PHPMailer\\' => 20,
         ),
+        'L' => 
+        array (
+            'Lang\\' => 5,
+        ),
         'F' => 
         array (
             'Firebase\\JWT\\' => 13,
         ),
+        'C' => 
+        array (
+            'Core\\' => 5,
+            'Config\\' => 7,
+        ),
+        'A' => 
+        array (
+            'App\\' => 4,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'database\\' => 
+        'Routes\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/database',
-        ),
-        'core\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/core',
+            0 => __DIR__ . '/../..' . '/routes',
         ),
         'PHPMailer\\PHPMailer\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
         ),
+        'Lang\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/lang',
+        ),
         'Firebase\\JWT\\' => 
         array (
             0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
+        ),
+        'Core\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/core',
+        ),
+        'Config\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/config',
+        ),
+        'App\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/app',
         ),
     );
 

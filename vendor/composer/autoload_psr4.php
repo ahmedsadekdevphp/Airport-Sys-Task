@@ -6,8 +6,11 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'database\\' => array($baseDir . '/database'),
-    'core\\' => array($baseDir . '/core'),
+    'Routes\\' => array($baseDir . '/routes'),
     'PHPMailer\\PHPMailer\\' => array($vendorDir . '/phpmailer/phpmailer/src'),
+    'Lang\\' => array($baseDir . '/lang'),
     'Firebase\\JWT\\' => array($vendorDir . '/firebase/php-jwt/src'),
+    'Core\\' => array($baseDir . '/core'),
+    'Config\\' => array($baseDir . '/config'),
+    'App\\' => array($baseDir . '/app'),
 );

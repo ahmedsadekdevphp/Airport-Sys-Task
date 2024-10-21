@@ -1,8 +1,8 @@
 <?php
+namespace App\Requests;
+use Core\Validator;
 
-require_once '../core/Validatore.php';
-
-class AirportRequest
+class CreateAirportRequest
 {
     public static function validate($data)
     {

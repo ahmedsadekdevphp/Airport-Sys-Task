@@ -1,8 +1,13 @@
 <?php
-require_once '../app/models/User.php';
-require_once '../core/Controller.php';
-require_once '../app/requests/ProfileUpdateRequest.php';
-require_once '../app/requests/ChangePasswordRequest.php';
+
+namespace App\Controllers;
+
+use Core\Controller;
+use App\Models\User;
+use App\Requests\ProfileUpdateRequest;
+use App\Requests\ChangePasswordRequest;
+use App\Services\Response;
+
 class ProfileController extends Controller
 {
     private $user;

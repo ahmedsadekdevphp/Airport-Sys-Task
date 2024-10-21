@@ -1,4 +1,5 @@
 <?php
+
 const HTTP_CONTINUE = 100;
 const HTTP_SWITCHING_PROTOCOLS = 101;
 const HTTP_PROCESSING = 102;            // RFC2518

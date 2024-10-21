@@ -1,5 +1,6 @@
 <?php
-
+namespace Core;
+use App\Services\Response;
 class Validator
 {
     private $errors = [];

@@ -1,6 +1,7 @@
 <?php
-require_once '../core/Database.php';
-
+namespace Core;
+use Core\Database;
+use PDO;
 class QueryBuilder
 {
 

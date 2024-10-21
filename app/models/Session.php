@@ -1,6 +1,7 @@
 <?php
-require_once '../core/Model.php';
-
+namespace App\Models;
+use Core\Model;
+use DateTime;
 class Session extends Model
 {
     private $table_name = "airport_sessions";

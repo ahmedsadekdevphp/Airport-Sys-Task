@@ -1,11 +1,7 @@
 <?php
-require_once '../core/Router.php';
-require_once '../app/controllers/RegisterController.php';
-require_once '../app/controllers/AuthController.php';
-require_once '../app/controllers/UsersController.php';
-require_once '../app/middlewares/AuthMiddleware.php';
-require_once '../app/middlewares/RoleMiddleware.php';
-
+use Core\Router;
+use App\Middlewares\RoleMiddleware;
+use App\Middlewares\AuthMiddleware;
 $router = new Router();
 
 $router->add('POST', 'register', 'RegisterController@register');

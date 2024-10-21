@@ -1,4 +1,6 @@
 <?php
+ namespace App\Services;
+
 class GetIp
 {
    public static function getClientIp()

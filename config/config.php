@@ -1,5 +1,7 @@
 <?php
 
+namespace Config;
+
 class Config
 {
     private static $config = null;
@@ -13,9 +15,8 @@ class Config
 
     public static function get($key)
     {
-        
-       $result= self::loadConfig(); // Ensure the config is loaded
+
+        $result = self::loadConfig(); // Ensure the config is loaded
         return self::$config[$key] ?? null;
     }
 }
-

@@ -1,5 +1,7 @@
 <?php
-require_once '../core/Model.php';
+namespace App\Models;
+use Core\Model;
+use App\Services\Response;
 
 class Airport extends Model
 {

@@ -1,5 +1,7 @@
 <?php
-require_once '../app/services/JwtService.php';
+namespace App\Middlewares;
+use App\Services\JwtService;
+use App\Services\Response;
 
 class AuthMiddleware
 {

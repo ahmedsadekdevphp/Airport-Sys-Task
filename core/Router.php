@@ -1,6 +1,9 @@
 <?php
-require_once '../app/middlewares/RateLimitMiddleware.php';
-require_once '../app/middlewares/ThrottleMiddleware.php';
+
+namespace Core;
+
+use App\Middlewares\RoleMiddleware;
+use InvalidArgumentException;
 
 class Router
 {
@@ -62,13 +65,14 @@ class Router
         if ($action) {
             //handel global middleware
             foreach ($this->globalMiddleware as $m) {
-                $middlewareInstance = new $m();
+                $middlewareClass = "App\\Middlewares\\" . $m;
+                $middlewareInstance = new $middlewareClass();
                 if (!$middlewareInstance->handle()) {
                     // Middleware failed, send response or abort
                     return;
                 }
             }
-            // Handle middleware if exist
+            // Handle middleware if exist in specific role 
             if (!empty($middleware)) {
                 foreach ($middleware as $m) {
                     $middlewareInstance = new $m();
@@ -81,10 +85,11 @@ class Router
                     }
                 }
             }
+
             //Handle Special Middleware
-            //handel global middleware
             foreach ($this->specialMiddleware as $m) {
-                $middlewareInstance = new $m();
+                $middlewareClass = "App\\Middlewares\\" . $m;
+                $middlewareInstance = new $middlewareClass();
                 if (!$middlewareInstance->handle()) {
                     // Middleware failed, send response or abort
                     return;
@@ -211,14 +216,16 @@ class Router
     private function handleControllerAction(string $action, array $params = [])
     {
         list($controllerName, $actionMethod) = explode('@', $action);
+        $controllerClass = "App\\Controllers\\" . $controllerName;
 
         $controllerFile = '../app/controllers/' . $controllerName . '.php';
+
         if (!file_exists($controllerFile)) {
             $this->sendResponse(404, "Controller $controllerName not found.");
         }
 
         require_once $controllerFile;
-        $controllerInstance = new $controllerName();
+        $controllerInstance = new $controllerClass();
         if (!method_exists($controllerInstance, $actionMethod)) {
             $this->sendResponse(404, "Method $actionMethod not found in controller $controllerName.");
         }

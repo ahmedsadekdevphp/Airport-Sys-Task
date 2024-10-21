@@ -1,8 +1,12 @@
 <?php
-require_once '../app/models/User.php';
-require_once '../core/Controller.php';
-require_once '../app/requests/ResetPasswordRequest.php';
-require_once '../app/requests/ChangeRoleRequest.php';
+
+namespace App\Controllers;
+
+use Core\Controller;
+use App\Models\User;
+use App\Requests\ResetPasswordRequest;
+use App\Requests\ChangeRoleRequest;
+use App\Services\Response;
 
 class UsersController extends Controller
 {

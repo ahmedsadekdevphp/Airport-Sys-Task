@@ -1,12 +1,14 @@
 <?php
-require_once '../app/models/Airport.php';
-require_once '../core/Controller.php';
-require_once '../app/requests/UpdateAirportRequest.php';
-require_once '../app/requests/AirportRequest.php';
-require_once '../app/requests/SearchAirportRequestName.php';
-require_once '../app/requests/SearchAirportRequestCode.php';
-require_once '../app/models/Country.php';
-require_once '../app/services/NotifyAdmin.php';
+namespace App\Controllers;
+use Core\Controller;
+use App\Models\Airport;
+use App\Models\Country;
+use App\Services\NotifyAdmin;
+use App\Requests\UpdateAirportRequest;
+use App\Requests\CreateAirportRequest;
+use App\Requests\SearchAirportRequestCode;
+use App\Requests\SearchAirportRequestName;
+use App\Services\Response;
 
 class AirportsController extends Controller
 {
@@ -32,7 +34,7 @@ class AirportsController extends Controller
     public function store()
     {
         $request = $this->data;
-        $validatedData = AirportRequest::validate($request);
+        $validatedData = CreateAirportRequest::validate($request);
         $this->country->checkCountry($validatedData['country']);
         $response = $this->airport->createAirport($validatedData);
         NotifyAdmin::sendActionEmail(trans('added'), $validatedData['name']);

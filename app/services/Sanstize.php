@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Services;
+
 class Sanstize
 {
     public static function sanitizeString(string $input): string

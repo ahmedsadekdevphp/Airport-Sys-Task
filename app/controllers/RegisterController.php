@@ -1,8 +1,13 @@
 <?php
-require_once '../app/models/User.php';
-require_once '../app/requests/RegisterRequest.php';
-require_once '../core/Controller.php';
-require_once '../app/services/NotifyUser.php';
+
+namespace App\Controllers;
+
+use Core\Controller;
+use App\Models\User;
+use App\Requests\RegisterRequest;
+use App\Services\NotifyUser;
+use App\Services\Response;
+
 class RegisterController extends Controller
 {
     /**

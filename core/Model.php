@@ -1,5 +1,6 @@
 <?php
-require_once '../core/QueryBuilder.php';
+namespace Core;
+use Core\QueryBuilder;
 
 class Model
 {

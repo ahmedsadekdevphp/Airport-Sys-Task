@@ -1,5 +1,6 @@
 <?php
-require_once '../app/services/EmailService.php';
+namespace App\Services;
+use App\services\EmailService;
 
 class NotifyUser
 {

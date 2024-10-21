@@ -1,6 +1,7 @@
 <?php
 
-require_once '../core/Validatore.php';
+namespace App\Requests;
+use Core\Validator;
 
 class SearchAirportRequestName
 {

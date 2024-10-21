@@ -4,9 +4,13 @@
     "version": "1.0.0",
     "autoload": {
         "psr-4": {
-            "core\\": "core/",
-            "database\\": "database/"
+            "App\\": "app/",
+            "Core\\": "core/",
+            "Lang\\": "lang/",
+            "Config\\": "config/",
+            "Routes\\": "routes/"
 
+            
         }
     },
     "authors": [

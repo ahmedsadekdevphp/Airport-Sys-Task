@@ -1,4 +1,6 @@
 <?php
+namespace Core;
+
 class Localization
 {
     private static $lang = 'en'; 

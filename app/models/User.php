@@ -1,7 +1,8 @@
 <?php
-require_once '../core/Model.php';
-require_once '../app/services/JwtService.php';
-
+namespace App\Models;
+use Core\Model;
+use App\Services\Response;
+use App\Services\JwtService;
 class User extends Model
 {
     private $table_name = "airport_users";
@@ -151,7 +152,7 @@ class User extends Model
 
     private function generateToken($user)
     {
-        return JWTService::generateToken([
+        return JwtService::generateToken([
             "id" => $user['id'],
             "email" => $user['email'],
             "role" => $user['role']

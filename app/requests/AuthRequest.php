@@ -1,7 +1,7 @@
 <?php
 
-require_once '../core/Validatore.php';
-
+namespace App\Requests;
+use Core\Validator;
 class AuthRequest
 {
     public static function validate($data)

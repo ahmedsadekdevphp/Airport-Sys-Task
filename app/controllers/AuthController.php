@@ -1,7 +1,10 @@
 <?php
-require_once '../app/models/User.php';
-require_once '../app/requests/AuthRequest.php';
-require_once '../core/Controller.php';
+namespace App\Controllers;
+use Core\Controller;
+use App\Models\User;
+use App\Requests\AuthRequest;
+use App\Services\Response;
+
 class AuthController extends Controller
 {
     public function login()

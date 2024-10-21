@@ -1,5 +1,6 @@
 <?php
-require_once '../core/ResponseCode.php'; 
+
+ namespace App\Services;
 
 class Response
 {
