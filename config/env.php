@@ -30,9 +30,9 @@ return [
             'time_frame' => 60
         ]
     ],
-    'MAIL_HOST' => 'salvalenti.com',
-    'MAIL_USERNAME' => 'test@salvalenti.com',
-    'MAIL_PASSWORD' => ']laUi#.bnx}F',
+    'MAIL_HOST' => '',
+    'MAIL_USERNAME' => '',
+    'MAIL_PASSWORD' => '',
     'MAIL_PORT' => 465, 
     'MAIL_ENCRYPTION' => 'ssl', 
     'ADMIN_ROLE'=>'admin',
