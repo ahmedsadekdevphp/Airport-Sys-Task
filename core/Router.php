@@ -63,37 +63,8 @@ class Router
         list($action, $params, $middleware, $roles) = $this->findMatchingRoute($url, $this->routes[$method]);
 
         if ($action) {
-            //handel global middleware
-            foreach ($this->globalMiddleware as $m) {
-                $middlewareClass = "App\\Middlewares\\" . $m;
-                $middlewareInstance = new $middlewareClass();
-                if (!$middlewareInstance->handle()) {
-                    // Middleware failed, send response or abort
-                    return;
-                }
-            }
-            // Handle middleware if exist in specific role 
-            if (!empty($middleware)) {
-                foreach ($middleware as $m) {
-                    $middlewareInstance = new $m();
-                    if ($m === RoleMiddleware::class && !empty($roles)) {
-                        $middlewareInstance->setRoles($roles);
-                    }
-                    if (!$middlewareInstance->handle()) {
-                        // Middleware failed, send response or abort
-                        return;
-                    }
-                }
-            }
-
-            //Handle Special Middleware
-            foreach ($this->specialMiddleware as $m) {
-                $middlewareClass = "App\\Middlewares\\" . $m;
-                $middlewareInstance = new $middlewareClass();
-                if (!$middlewareInstance->handle()) {
-                    // Middleware failed, send response or abort
-                    return;
-                }
+            if (!$this->handleMiddleware($middleware, $roles)) {
+                return;
             }
             $params = $this->sanitizeParameters($params);
             $this->handleAction($action, $params);
@@ -218,7 +189,7 @@ class Router
         list($controllerName, $actionMethod) = explode('@', $action);
         $controllerClass = "App\\Controllers\\" . $controllerName;
 
-        $controllerFile = dirname(__DIR__).'/app/controllers/' . $controllerName . '.php';
+        $controllerFile = dirname(__DIR__) . '/app/controllers/' . $controllerName . '.php';
 
         if (!file_exists($controllerFile)) {
             $this->sendResponse(404, "Controller $controllerName not found.");
@@ -251,5 +222,61 @@ class Router
         return array_map(function ($param) {
             return htmlspecialchars(strip_tags($param), ENT_QUOTES, 'UTF-8');
         }, $params);
+    }
+
+    /**
+     * Handles the execution of middleware, including global, specific role,
+     * and special middleware.
+     *
+     * @param array $middleware An array of middleware classes to be executed.
+     * @param array $roles An array of roles associated with the request.
+     * @return bool Returns true if all middleware passes; otherwise, false.
+     */
+    private function handleMiddleware(array $middleware, array $roles): bool
+    {
+        // Handle global middleware
+        foreach ($this->globalMiddleware as $m) {
+            if (!$this->executeMiddleware($m)) {
+                return false; // Middleware failed
+            }
+        }
+
+        // Handle specific role middleware if it exists
+        if (!empty($middleware)) {
+            foreach ($middleware as $m) {
+                if ($m === RoleMiddleware::class && !empty($roles)) {
+                    $middlewareInstance = new $m();
+                    $middlewareInstance->setRoles($roles);
+                } else {
+                    $middlewareInstance = new $m();
+                }
+
+                if (!$middlewareInstance->handle()) {
+                    return false; // Middleware failed
+                }
+            }
+        }
+
+        // Handle special middleware
+        foreach ($this->specialMiddleware as $m) {
+            if (!$this->executeMiddleware($m)) {
+                return false; // Middleware failed
+            }
+        }
+
+        return true; // All middleware passed
+    }
+
+    /**
+     * Executes a specific middleware class and returns the result of its handle method.
+     *
+     * @param string $middleware The name of the middleware class to be executed.
+     * @return bool Returns the result of the middleware's handle method.
+     */
+    private function executeMiddleware(string $middleware): bool
+    {
+        $middlewareClass = "App\\Middlewares\\" . $middleware;
+        $middlewareInstance = new $middlewareClass();
+        return $middlewareInstance->handle();
     }
 }

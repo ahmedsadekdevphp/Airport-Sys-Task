@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Controllers;
+
 use Core\Controller;
 use App\Models\Airport;
 use App\Models\Country;
@@ -21,6 +23,11 @@ class AirportsController extends Controller
         $this->airport = new Airport();
         $this->country = new Country();
     }
+
+    /**
+     * Handles the request to retrieve a list of airports.
+     *
+     */
 
     public function index()
     {
@@ -50,6 +57,10 @@ class AirportsController extends Controller
         Response::jsonResponse($response);
     }
 
+    /**
+     * Retrieves airports based on the specified airport name from the request.
+     * 
+     */
     public function getAirportByName()
     {
         $request = $this->data;
@@ -57,7 +68,10 @@ class AirportsController extends Controller
         $airports = $this->airport->searchInAirports('airport_name', $validatedData['name']);
         Response::jsonResponse(['status' => HTTP_OK, 'data' => $airports]);
     }
-
+    /**
+     * Retrieves airports based on the specified airport code from the request.
+     * 
+     */
     public function getAirportByCode()
     {
         $request = $this->data;

@@ -1,7 +1,10 @@
 <?php
+
 namespace Core;
+
 use Core\Database;
 use PDO;
+
 class QueryBuilder
 {
 
@@ -12,7 +15,7 @@ class QueryBuilder
         $this->conn = Database::getConnection();
     }
 
-    public function find($table,$conditions,$columns = ['*'])
+    public function find($table, $conditions, $columns = ['*'])
     {
         $sql = "SELECT " . implode(", ", $columns) . " FROM {$table}";
         $sql .= " WHERE ";

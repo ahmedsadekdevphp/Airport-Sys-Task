@@ -10,14 +10,6 @@ class User extends Model
 {
     private $table_name = "airport_users";
 
-    public $full_name;
-    public $email;
-    public $password;
-    public $role;
-    public $approved;
-
-
-
     /**
      * Changes the role of a user in the database.
      *
@@ -106,13 +98,6 @@ class User extends Model
         return $response;
     }
 
-
-
-
-
-
-
-
     public function getAdminEmails()
     {
         $columns = 'email';
@@ -122,13 +107,7 @@ class User extends Model
         $data = $this->QueryBuilder->getAll($this->table_name, $columns, $conditions);
         return  $data;
     }
-
-
-
-
-
-
-    
+   
     /**
      * Changes the approval status of a user in the database.
      *

@@ -36,7 +36,7 @@ return [
     'MAIL_PORT' => 465, 
     'MAIL_ENCRYPTION' => 'ssl', 
     'ADMIN_ROLE'=>'admin',
-    'REDIS_HOST'=>'192.168.3.80',
-    'REDIS_PORT'=>'6379',
-    'REDIS_PASSWORD'=>''
+    'REDIS_HOST'=>'',
+    'REDIS_PORT'=>'',
+    'REDIS_PASSWORD'=>'',
 ];
