@@ -10,6 +10,7 @@ return array(
     'PHPMailer\\PHPMailer\\' => array($vendorDir . '/phpmailer/phpmailer/src'),
     'Lang\\' => array($baseDir . '/lang'),
     'Firebase\\JWT\\' => array($vendorDir . '/firebase/php-jwt/src'),
+    'Database\\' => array($baseDir . '/database'),
     'Core\\' => array($baseDir . '/core'),
     'Config\\' => array($baseDir . '/config'),
     'App\\' => array($baseDir . '/app'),

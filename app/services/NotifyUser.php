@@ -1,9 +1,20 @@
 <?php
+
 namespace App\Services;
-use App\services\EmailService;
+
+use App\Services\EmailService;
 
 class NotifyUser
 {
+    /**
+     * Sends a welcome email to a new user.
+     *
+     * @param string $to The recipient's email address.
+     * @param string $name The name of the recipient.
+     * 
+     * @return void
+     */
+
     public static function  sendWelcomeEmail($to, $name)
     {
         $emailService = new EmailService();

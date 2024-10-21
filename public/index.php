@@ -3,10 +3,10 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 ini_set('log_errors', 1); 
 ini_set('error_log', __DIR__ . '/logs/error.log'); 
-require '../vendor/autoload.php'; 
-require_once '../core/ResponseCode.php'; 
-require_once '../routes/api.php';
-require_once  '../app/services/Helpers.php';
+require dirname(__DIR__).'/vendor/autoload.php'; 
+require_once dirname(__DIR__).'/core/ResponseCode.php'; 
+require_once dirname(__DIR__).'/routes/api.php';
+require_once  dirname(__DIR__).'/app/services/Helpers.php';
 
 
 

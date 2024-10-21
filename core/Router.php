@@ -218,7 +218,7 @@ class Router
         list($controllerName, $actionMethod) = explode('@', $action);
         $controllerClass = "App\\Controllers\\" . $controllerName;
 
-        $controllerFile = '../app/controllers/' . $controllerName . '.php';
+        $controllerFile = dirname(__DIR__).'/app/controllers/' . $controllerName . '.php';
 
         if (!file_exists($controllerFile)) {
             $this->sendResponse(404, "Controller $controllerName not found.");

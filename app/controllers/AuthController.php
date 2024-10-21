@@ -17,7 +17,10 @@ class AuthController extends Controller
         $this->user = new User();
     }
 
-
+    /**
+     * Handles user login and returns a JSON response with Token.
+     *
+     */
     public function login()
     {
         $request = $this->data;
@@ -25,6 +28,12 @@ class AuthController extends Controller
         $response = $this->user->Login($validatedData);
         Response::jsonResponse($response);
     }
+
+
+    /**
+     * Logs out the user by updating the token version and destroying the session.
+     *
+     */
 
     public function logout()
     {

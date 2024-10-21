@@ -18,6 +18,10 @@ class UsersController extends Controller
         $this->user = new User();
     }
 
+    /**
+     * Retrieves and returns a paginated list of all users.
+     *
+     */
     public function index()
     {
         $page = isset($_GET['page']) ? (int)$_GET['page'] : config('FIRST_PAGE');
@@ -26,6 +30,12 @@ class UsersController extends Controller
     }
 
 
+    /**
+     * Activates a user by changing their status to approved.
+     *
+     * @param int|string $userId The ID of the user to be activated.
+     * 
+     */
     public function activateUser($userId)
     {
         $result = $this->user->changeStatus($userId, config('USER_STATUS_APPROVED'));
@@ -35,6 +45,13 @@ class UsersController extends Controller
         Response::jsonResponse(["status" => HTTP_OK, "message" => trans('user_activated')]);
     }
 
+    /**
+     * Disables a user by changing their status to disabled.
+     *
+     * @param int|string $userId The ID of the user to be disabled.
+     * 
+     * @return void
+     */
     public function disableUser($userId)
     {
         $result = $this->user->changeStatus($userId, config('USER_STATUS_DISABLED'));
@@ -44,6 +61,12 @@ class UsersController extends Controller
         Response::jsonResponse(["status" => HTTP_OK, "message" => trans('user_disabled')]);
     }
 
+    /**
+     * Changes the role of a user.
+     *
+     * @param int|string $userId The ID of the user whose role is to be changed.
+     * 
+     */
     public function changeRole($userId)
     {
         $validatedData = ChangeRoleRequest::validate($this->data);

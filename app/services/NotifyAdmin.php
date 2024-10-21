@@ -1,6 +1,8 @@
 <?php
 namespace App\Services;
 use App\Models\User;
+use App\Services\EmailService;
+
 class NotifyAdmin
 {
     public static function sendActionEmail($action, $airportName)

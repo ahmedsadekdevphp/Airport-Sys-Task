@@ -8,9 +8,9 @@
             "Core\\": "core/",
             "Lang\\": "lang/",
             "Config\\": "config/",
-            "Routes\\": "routes/"
+            "Routes\\": "routes/",
+            "Database\\": "database/"
 
-            
         }
     },
     "authors": [
